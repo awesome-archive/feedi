@@ -1,17 +1,39 @@
-<a href="https://codeclimate.com/github/codeclimate/codeclimate/maintainability"><img src="https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability" /></a> [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7cfcafa1fccb4fd3b9eba2ae869415ed)](https://app.codacy.com/app/davide-santangelo/feedi?utm_source=github.com&utm_medium=referral&utm_content=davidesantangelo/feedi&utm_campaign=Badge_Grade_Dashboard) <img src="https://img.shields.io/github/tag/davidesantangelo/feedi.svg" /> <a href="https://github.com/eonu/arx/blob/master/LICENSE"><img src="https://camo.githubusercontent.com/ad562cdf422b103f1a409db66ba31cb79414594d/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6c6963656e73652f656f6e752f6172782e737667" alt="License" data-canonical-src="https://img.shields.io/github/license/eonu/arx.svg" style="max-width:100%;"></a> [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/davidesantangelo/feedi/issues) [![Open Source Helpers](https://www.codetriage.com/davidesantangelo/feedi/badges/users.svg)](https://www.codetriage.com/davidesantangelo/feedi)
+<a href="https://codeclimate.com/github/davidesantangelo/feedi/maintainability"><img src="https://api.codeclimate.com/v1/badges/e84db3d81a5e9935d63a/maintainability" /></a> <img src="https://img.shields.io/github/tag/davidesantangelo/feedi.svg"/> <a href="https://github.com/eonu/arx/blob/master/LICENSE"><img src="https://camo.githubusercontent.com/ad562cdf422b103f1a409db66ba31cb79414594d/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f6c6963656e73652f656f6e752f6172782e737667" alt="License" data-canonical-src="https://img.shields.io/github/license/eonu/arx.svg" style="max-width:100%;"></a> [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/davidesantangelo/feedi/issues) [![Open Source Helpers](https://www.codetriage.com/davidesantangelo/feedi/badges/users.svg)](https://www.codetriage.com/davidesantangelo/feedi)
+ <img src="https://img.shields.io/github/languages/top/davidesantangelo/feedi.svg"/>
+
 
 
 # FEEDI
 
-Feedi turn feed data into a fantastic API.
+Feedi turns feed data into a fantastic API.
 
 Feedi simplifies how you handle RSS, Atom, or JSON feeds. You can add and keep track of your favourite feed data with a simple and clean REST API. All entries are enriched by Machine Learning and Semantic engines.
 
 ## Search Engine
 
-Little search engine developed in React around this API. Take a look at [search.feedi.me](http://search.feedi.me).
+Take a look at [search.feedi.me](http://search.feedi.me) for a little search engine developed in React around this API. 
 
-Feedbacks are welcome at [github repo](https://github.com/davidesantangelo/search.feedi.me)
+Feedback is welcome on [its repository](https://github.com/davidesantangelo/search.feedi.me).
+
+## Built With
+
+- [Ruby on Rails](https://github.com/rails/rails) &mdash; Our back end API is a Rails app. It responds to requests RESTfully in JSON.
+- [PostgreSQL](https://www.postgresql.org/) &mdash; Our main data store is in Postgres.
+- [Redis](https://redis.io/) &mdash; We use Redis as a cache and for transient data.
+- [Feedjira](https://github.com/feedjira/feedjira) Feedjira is a Ruby library designed to parse feeds.
+- [ElasticSearch](https://www.elastic.co/products/elasticsearch) Elasticsearch is a distributed, RESTful search and analytics engine.
+- [Dandelion](https://dandelion.eu) Semantic Text Analytics as a service.
+- [Sidekiq](http://sidekiq.org) Simple, efficient background processing for Ruby.
+- [FastJSONAPI](https://github.com/Netflix/fast_jsonapi) A lightning fast JSON:API serializer for Ruby Objects.
+- [Searchkick](https://github.com/ankane/searchkick) Intelligent search made easy.
+
+Plus *lots* of Ruby Gems, a complete list of which is at [/master/Gemfile](https://github.com/davidesantangelo/feedi/blob/master/Gemfile).
+
+## Buy me a coffee
+
+If you want to support me in server costs to leave Feedi online, consider buying me a coffee! Thanks!
+
+<a href="https://www.buymeacoffee.com/582rhJH" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
 
 ## Routes
 
@@ -39,7 +61,7 @@ entries_search_index GET    /search/entries(.:format)                  search#en
  ```
 ## Pagination
 
-Requests that return multiple items will be paginated to 20 items by default. You can specify further pages with the ```?page``` parameter. Pagination informations are available inside **headers**. Example:
+Requests that return multiple items will be paginated to 20 items by default. You can specify further pages with the ```?page``` parameter. Pagination information is available inside **headers**. Example:
 
 ```
 Per-Page: 20
@@ -74,7 +96,7 @@ RestClient.post "https://feedi.me/tokens/refresh", {}, { Authorization: "Token #
 ``` ruby
 RestClient.get "https://feedi.me/tokens/current", { Authorization: "Token #{TOKEN}" }
 ```
-    
+
 #### RESPONSE ( get, refresh and current )
 ``` json
 {
@@ -92,7 +114,7 @@ RestClient.get "https://feedi.me/tokens/current", { Authorization: "Token #{TOKE
 
 ## Feeds
 
-FEEDS RSS (originally RDF Site Summary; later, two competing approaches emerged, which used the backronyms Rich Site Summary and Really Simple Syndication respectively) is a type of web feed which allows users and applications to access updates to online content in a standardized, computer-readable format.
+*RSS is a type of web feed which allows users and applications to access updates to online content in a standardized, computer-readable format* — [RSS Wiki](https://en.wikipedia.org/wiki/RSS).
 
 #### INDEX FEEDS
     
@@ -364,12 +386,7 @@ RestClient.get "https://feedi.me/feeds/:feed_id/logs/:id", { Authorization: "Tok
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/feedi. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-## Services
-
-**Dandelion API:** Entity extraction and sentiment analysis are provided by [Dandelion API](https://dandelion.eu),
-**ElasticSearch:** Search Engine provided by [ElasticSearch API](https://www.elastic.co/products/elasticsearch)
+Bug reports and pull requests are welcome on GitHub at https://github.com/davidesantangelo/feedi. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 

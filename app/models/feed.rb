@@ -1,11 +1,11 @@
 class Feed < ApplicationRecord
-  include W3CValidators
+  searchkick
+
   extend Pagy::Search
 
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  include W3CValidators
   include Searchable
-
+  
   # scopes
   default_scope { order(created_at: :desc) }
   scope :newest, -> { enabled.where('created_at <= ?', 24.hours.ago) }
@@ -26,17 +26,16 @@ class Feed < ApplicationRecord
   # class methods
   def self.parse(url:)
     url = url.gsub('feed://', '').gsub('feed:', '').strip
-
-    Feedjira::Feed.parse(RestClient.get(url).body)
-  rescue Feedjira::NoParserAvailable
+    Feedjira.parse(RestClient.get(url).body)
+  rescue Feedjira::NoParserAvailable => e
     Rails.logger.error(e)
     nil
   rescue URI::InvalidURIError => e
     Rails.logger.error(e)
-    nil
+    raise e
   rescue RestClient::ExceptionWithResponse => e
     Rails.logger.error(e)
-    nil
+    raise e
   end
   
   def self.recent(limit: 50)
@@ -59,6 +58,7 @@ class Feed < ApplicationRecord
       f.language = feed.try(:language)
     end
 
+    feed.enrich
     feed.async_import
 
     feed
@@ -84,6 +84,23 @@ class Feed < ApplicationRecord
     end
 
     log.stop!(entries_count: count)
+  end
+
+  def enrich
+    domain_rank = Service::Metric.rank(domain).abs
+
+    self.rank = domain_rank.zero? ? 0 : ((Math::log10(domain_rank) / Math::log10(Feed.maximum(:rank))) * 100).round
+
+    save!
+  end
+
+  def domain
+    url = self.url.gsub('feed://', '').gsub('feed:', '').strip
+    url = "http://#{url}" if URI.parse(url).scheme.nil?
+
+    PublicSuffix.domain(URI.parse(url).host)
+  rescue StandardError
+    nil
   end
 
   def async_import

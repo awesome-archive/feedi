@@ -1,9 +1,9 @@
 class Entry < ApplicationRecord
+  searchkick settings: { index: { max_result_window: 110000 } }
+  
   extend Pagy::Search
   
   include Webhook::Observable
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
   include ActionView::Helpers::SanitizeHelper
   include Searchable
 
@@ -27,7 +27,7 @@ class Entry < ApplicationRecord
 
     attrs = {
       feed_id: feed_id,
-      title: entry.title,
+      title: entry.title.blank? ? 'untitled' : entry.title,
       body: entry.summary,
       url: entry.url,
       external_id: entry.entry_id,
@@ -48,14 +48,22 @@ class Entry < ApplicationRecord
   end
 
   # instance methods  
-  def as_indexed_json(options = {})
+  def as_indexed_json(_options = {})
     as_json(except: ['annotations'])
   end
 
   def tags
-    return [] if self.annotations.to_a.blank?
-
-    self.annotations.to_a.map { |a| a['title'].downcase }.uniq
+    return [] unless self.annotations.present?
+    
+    self.annotations.uniq { |h| h['id'] }.map do |annotation|
+      {
+        uri: annotation.dig('uri'),
+        spot: annotation.dig('spot'),
+        label: annotation.dig('label'),
+        confidence: annotation.dig('confidence'),
+        categories: annotation.dig('categories')
+      }
+    end
   end
 
   def text
